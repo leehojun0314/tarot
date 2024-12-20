@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body,
+html {
+  margin: 0;
+}
+/* App.css */
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(10, auto);
+  /* gap: 2px; */
+  list-style-type: none;
+  /* padding: 6px; */
+  /* height: 100vh; */
+  width: 100vw; /* 화면 너비 전체 */
+  height: 100vh; /* 화면 높이 전체 */
+  margin: 0;
+  justify-items: center;
+  align-items: center;
+}
+.card-container button {
+  /* width: calc(100vw / 6); */
+  grid-column: span 2;
+}
+/* Card.css */
+.card {
+  /* width: 80px; */
+  /* height: 120px; */
+  /* width: 80px;
+  height: 120px; */
+  width: calc(100vw / 8); /* 가로 8개 분할 */
+  height: calc(100vh / 10); /* 세로 10개 분할 */
+  perspective: 1000px;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  position: relative;
+}
+.card-inner img {
+  width: calc((100vw / 8));
+  height: calc(100vh / 10);
+}
+.card-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+.card-back.opposite {
+  transition: none;
+  transform: rotateX(180deg);
+}
+.card-front {
+  /* background-color: blue; */
+  /* background-image: url('back.png'); */
+  background-size: calc(100vw / 8) calc(100vh / 10);
+}
+
+.card-back {
+  background-color: white;
+  transform: rotateY(180deg);
+}
+/* @media screen and (width: 600px) {
+  .card {
+    width: 40px;
+    height: 60px;
+  }
+  .card-inner img {
+    width: 40px;
+    height: 60px;
+  }
+  .card-front {
+    background-size: 40px 60px;
+  }
+} */
