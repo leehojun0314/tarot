@@ -6,6 +6,7 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 // import '../../App.css';
 import Card from '@/components/Card';
+import { redirect } from 'next/navigation';
 
 type TCard = {
   index: number;
@@ -51,9 +52,39 @@ export default function App() {
   //   initializeCards();
   // };
 
-  const handleSubmit = () => {
-    console.log('Selected cards:', selectedCards);
-    window.alert('Selected Cards: ' + JSON.stringify(selectedCards));
+  const handleSubmit = async () => {
+    const data = selectedCards; // 선택된 카드를 보내는 데이터로 사용
+
+    try {
+      // API로 JSON 데이터 전송
+      const response = await fetch('/api/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ selectedCards: data }),
+      });
+
+      if (!response.ok) {
+        throw new Error('API 요청이 실패했습니다.');
+      }
+
+      // 응답 결과 받기
+      const result = await response.json();
+
+      // 응답에 따라 리다이렉트 또는 결과 페이지로 데이터 전달
+      if (result.success) {
+        // 리다이렉트 예시
+        redirect('/result'); // `router.push` 대신 `redirect` 사용
+      } else {
+        // 쿼리 파라미터로 데이터 전달
+        redirect(
+          `/result?resultData=${encodeURIComponent(JSON.stringify(result))}`,
+        );
+      }
+    } catch (error) {
+      console.error('API 요청 중 오류 발생:', error);
+    }
   };
 
   const handleCardSelect = (index: number) => {
@@ -104,7 +135,10 @@ export default function App() {
               isFlipped={isFlipped}
             />
           ))}
-          <button className='btn btn-primary bg-red-50' onClick={handleSubmit}>
+          <button
+            className='btn btn-primary bg-red-50 w-[100%] h-[100%]'
+            onClick={handleSubmit}
+          >
             Submit
           </button>
         </ul>
