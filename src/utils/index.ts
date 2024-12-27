@@ -1,10 +1,12 @@
-import { Card } from '@prisma/client';
-
 export function getCardDescriptions({
   card,
   isOpposite,
 }: {
-  card: Card;
+  card: {
+    id: number;
+    name: string;
+    content: string;
+  };
   isOpposite: boolean;
 }) {
   return `Card ${card.id} (${card.name}): ${
