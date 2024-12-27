@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model Card {
+  id        Int             @id @default(autoincrement())
+  name      String
+  content   String          @default("") @db.Text
+  chatRooms ChatRoom_Card[]
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  createdAt DateTime  @default(now())
+  chatRoom  ChatRoom?
+}
+
+model ChatRoom {
+  id        Int             @id @default(autoincrement())
+  userId    Int             @unique
+  user      User            @relation(fields: [userId], references: [id])
+  cards     ChatRoom_Card[]
+  messages  Message[]
+  createdAt DateTime        @default(now())
+}
+
+model ChatRoom_Card {
+  id         Int      @id @default(autoincrement())
+  chatRoomId Int
+  chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [id])
+  cardId     Int
+  card       Card     @relation(fields: [cardId], references: [id])
+  isOpposite Boolean
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  chatRoomId Int
+  chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [id])
+  sender     String
+  message    String   @db.Text
+  timestamp  DateTime @default(now())
+}

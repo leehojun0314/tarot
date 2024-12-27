@@ -1,19 +1,16 @@
 'use client';
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
 import React from 'react';
 import { useEffect, useState } from 'react';
-// import '../../App.css';
 import Card from '@/components/Card';
-import { redirect } from 'next/navigation';
 
-type TCard = {
-  index: number;
-  isOpposite: boolean;
-  isFlipped: boolean;
-};
+import { TCard } from '@/types';
+// import { submitCards } from '../actions';
+// import axios from 'axios';
+// import { submitCards } from '../actions';
+import axios from 'axios';
+import { submitCards } from '../actions';
 export default function App() {
+  // const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [imagesLoaded, setImagesLoaded] = useState(0);
   const [cards, setCards] = useState<Array<TCard>>([]);
@@ -53,35 +50,27 @@ export default function App() {
   // };
 
   const handleSubmit = async () => {
-    const data = selectedCards; // 선택된 카드를 보내는 데이터로 사용
-
     try {
-      // API로 JSON 데이터 전송
-      const response = await fetch('/api/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ selectedCards: data }),
-      });
-
-      if (!response.ok) {
-        throw new Error('API 요청이 실패했습니다.');
-      }
-
-      // 응답 결과 받기
-      const result = await response.json();
-
-      // 응답에 따라 리다이렉트 또는 결과 페이지로 데이터 전달
-      if (result.success) {
-        // 리다이렉트 예시
-        redirect('/result'); // `router.push` 대신 `redirect` 사용
+      console.log('handle submit called');
+      console.log('selected cards: ', selectedCards);
+      console.log('submit cards function:', submitCards);
+      const room = await submitCards(selectedCards, 1); //TODO: need to be fixed
+      if (room && room.id) {
+        window.location.href = `/chat?id=${room.id}`;
       } else {
-        // 쿼리 파라미터로 데이터 전달
-        redirect(
-          `/result?resultData=${encodeURIComponent(JSON.stringify(result))}`,
-        );
+        window.alert('Error occured');
       }
+      // axios
+      //   .post('/api/submit', {
+      //     selectedCards,
+      //     userId: 1,
+      //   })
+      //   .then((res) => {
+      //     console.log('submit  res:', res);
+      //   })
+      //   .catch((err) => {
+      //     console.log('err: ', err);
+      //   });
     } catch (error) {
       console.error('API 요청 중 오류 발생:', error);
     }
@@ -136,7 +125,7 @@ export default function App() {
             />
           ))}
           <button
-            className='btn btn-primary bg-red-50 w-[100%] h-[100%]'
+            className='btn btn-primary  w-[100%] h-[100%]'
             onClick={handleSubmit}
           >
             Submit

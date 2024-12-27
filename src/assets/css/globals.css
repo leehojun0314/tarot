@@ -5,6 +5,7 @@
 body,
 html {
   margin: 0;
+  /* padding-bottom: 50px; */
 }
 /* App.css */
 .card-container {
@@ -16,7 +17,7 @@ html {
   /* padding: 6px; */
   /* height: 100vh; */
   width: 100vw; /* 화면 너비 전체 */
-  height: 100vh; /* 화면 높이 전체 */
+  height: calc(100vh - 50px); /* 화면 높이 전체 */
   margin: 0;
   justify-items: center;
   align-items: center;
@@ -32,7 +33,7 @@ html {
   /* width: 80px;
   height: 120px; */
   width: calc(100vw / 8); /* 가로 8개 분할 */
-  height: calc(100vh / 10); /* 세로 10개 분할 */
+  height: calc((100vh - 50px) / 10); /* 세로 10개 분할 */
   perspective: 1000px;
 }
 
@@ -45,7 +46,7 @@ html {
 }
 .card-inner img {
   width: calc((100vw / 8));
-  height: calc(100vh / 10);
+  height: calc((100vh - 50px) / 10);
 }
 .card-inner.flipped {
   transform: rotateY(180deg);
@@ -65,7 +66,7 @@ html {
 .card-front {
   /* background-color: blue; */
   /* background-image: url('back.png'); */
-  background-size: calc(100vw / 8) calc(100vh / 10);
+  background-size: calc(100vw / 8) calc((100vh - 50px) / 10);
 }
 
 .card-back {
