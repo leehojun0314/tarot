@@ -11,9 +11,10 @@ const client = new OpenAI({
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { chatRoomId: string } },
+  { params }: { params: { chatRoomId: string; luck: string } },
 ) {
   const chatRoomId = parseInt(params.chatRoomId, 10);
+  const luck = params.luck;
   // const { message } = await request.json();
   // console.log('message: ', message);
   try {
@@ -33,13 +34,13 @@ export async function GET(
     // 카드 설명 생성
     const cardDescriptions = chatRoomCards.map(getCardDescriptions);
     console.log('flag 3');
-    const userMessage = `Cards drawn:\n${cardDescriptions.join(
+    const userMessage = `I want to know about my ${luck} luck. Cards drawn:\n${cardDescriptions.join(
       '\n',
     )}\nAI response:`;
 
     // OpenAI ChatGPT 요청 (스트리밍 방식)
     const stream = await client.chat.completions.create({
-      model: 'gpt-4',
+      model: 'gpt-4-turbo',
       messages: [
         { role: 'system', content: configs.systemMessage },
         { role: 'user', content: userMessage },

@@ -51,17 +51,29 @@ export default function ChatRoom() {
       })
       .then(async (res) => {
         console.log('messages res: ', res);
-        if (res.length) {
-          setMessages(res);
-          return false;
-        } else {
+        setMessages(res);
+        // if (res.length) {
+        //   return false;
+        // } else {
+        //   return true;
+        // }
+        const salutation = searchParams.get('salutation');
+        if (salutation === 'true') {
           return true;
         }
+        if (salutation === 'false') {
+          return false;
+        }
+        return false;
       })
       .then((bool) => {
         console.log('bool: ', bool);
         if (bool) {
-          return fetch(`/api/chat/salutation/${chatRoomId}`);
+          return fetch(
+            `/api/chat/salutation/${chatRoomId}?luck=${searchParams.get(
+              'luck',
+            )}&`,
+          );
         } else {
           return;
         }

@@ -12,6 +12,9 @@ export default {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
       },
+      transitionDuration: {
+        '600': '600ms',
+      },
     },
   },
   plugins: [require('daisyui')],
