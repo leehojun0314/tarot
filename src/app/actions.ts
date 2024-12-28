@@ -1,6 +1,6 @@
 'use server';
 import { TCard } from '@/types';
-import prisma from '../../prisma/db';
+import prisma from '../libs/db';
 export async function submitCards(cards: TCard[], userId: number) {
   try {
     console.log(`submit cards called. cards: ${cards}`);

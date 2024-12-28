@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '../../../../libs/db';
+// import prisma from '../../../../libs/db';
 import { getCardDescriptions } from '@/utils';
 import OpenAI from 'openai';
 import { configs } from '@/configs';
@@ -17,21 +17,38 @@ export async function POST(
     return new Response('Bad request', { status: 400 });
   }
   try {
-    await prisma.message.create({
-      data: {
-        chatRoomId: parseInt(chatRoomId),
+    // await prisma.message.create({
+    //   data: {
+    //     chatRoomId: parseInt(chatRoomId),
+    //     sender: 'user',
+    //     message,
+    //   },
+    // });
+    await fetch(`${req.nextUrl.clone().origin}/api/model/message`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chatRoomId,
         sender: 'user',
         message,
-      },
+      }),
+    }).catch((err) => {
+      console.error('insert message error: ', err);
+      throw new Error('Internal server error');
     });
+
     const client = new OpenAI({ apiKey: process.env['OPENAI_API_KEY'] });
 
-    const chatRoomCards = await prisma.chatRoom_Card.findMany({
-      where: { chatRoomId: parseInt(chatRoomId) },
-      include: {
-        card: true,
-      },
-    });
+    // const chatRoomCards = await prisma.chatRoom_Card.findMany({
+    //   where: { chatRoomId: parseInt(chatRoomId) },
+    //   include: {
+    //     card: true,
+    //   },
+    // });
+    const chatRoomCardsRes = await fetch(`${req.nextUrl.clone().origin}`);
+    const chatRoomCards = await chatRoomCardsRes.json();
     const cardDescriptions = chatRoomCards.map(getCardDescriptions);
     console.log('card descriptions: ', cardDescriptions);
     const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
@@ -59,13 +76,13 @@ export async function POST(
           }
           console.log('accumulator: ', accumulator);
           controller.close();
-          await prisma.message.create({
-            data: {
-              chatRoomId: parseInt(chatRoomId),
-              sender: 'ai',
-              message: accumulator,
-            },
-          });
+          // await prisma.message.create({
+          //   data: {
+          //     chatRoomId: parseInt(chatRoomId),
+          //     sender: 'ai',
+          //     message: accumulator,
+          //   },
+          // });
         } catch (err) {
           console.log('error: ', err);
         }
