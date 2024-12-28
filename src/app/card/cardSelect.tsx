@@ -9,6 +9,7 @@ import { TCard } from '@/types';
 // import { submitCards } from '../actions';
 import { submitCards } from '../actions';
 import { useSearchParams } from 'next/navigation';
+import { configs } from '@/configs';
 export default function App() {
   // const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -44,11 +45,9 @@ export default function App() {
     }
   }, [imagesLoaded]);
   useEffect(() => {
-    if (selectedCards.length === 5) {
+    if (selectedCards.length === configs.cardSelectCount) {
       setLoadingSubmit;
-      setTimeout(() => {
-        handleSubmit();
-      }, 1000);
+      handleSubmit();
     }
   }, [selectedCards]);
   const handleImageLoad = () => {
@@ -64,7 +63,7 @@ export default function App() {
     if (loading) {
       return;
     }
-    if (selectedCards.length < 5) {
+    if (selectedCards.length < configs.cardSelectCount) {
       return;
     }
     try {
@@ -167,8 +166,17 @@ export default function App() {
         )}
         <dialog id='alertModal' className='modal'>
           <div className='modal-box'>
-            <h3 className='font-bold text-xl'>타로카드에 오신걸 환영합니다.</h3>
-            <p className='p-4 text-center text-2xl'>카드 5개를 골라주세요!</p>
+            <h3 className='font-bold text-xl'>
+              {
+                configs.luckOptions.find(
+                  (val) => val.id === searchParams.get('luck'),
+                )?.name
+              }
+              에 관해 알아보기 위해
+            </h3>
+            <p className='p-4 text-center text-2xl'>
+              카드 {configs.cardSelectCount}개를 골라주세요!
+            </p>
             <div className='modal-action'>
               <form method='dialog'>
                 {/* if there is a button in form, it will close the modal */}
