@@ -70,7 +70,7 @@ export default function ChatRoom() {
         console.log('bool: ', bool);
         if (bool) {
           return fetch(
-            `/api/chat/salutation/${chatRoomId}?luck=${searchParams.get(
+            `/api/edge/salutation/${chatRoomId}?luck=${searchParams.get(
               'luck',
             )}&`,
           );

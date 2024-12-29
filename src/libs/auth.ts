@@ -1,4 +1,4 @@
-import prisma from '../../prisma/db';
+import prisma from './db';
 
 export default async function auth(userId: number) {
   // const { userId } = await req.json();

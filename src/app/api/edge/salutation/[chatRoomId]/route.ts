@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+// import { PrismaClient } from '@prisma/client';
 import { OpenAI } from 'openai';
 import { configs } from '@/configs';
 import { getCardDescriptions } from '@/utils';
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 const client = new OpenAI({
   apiKey: process.env['OPENAI_API_KEY'],
 });
@@ -15,21 +15,23 @@ export async function GET(
 ) {
   const chatRoomId = parseInt(params.chatRoomId, 10);
   const luck = params.luck;
-  // const { message } = await request.json();
-  // console.log('message: ', message);
+  console.log('next url: ', request.nextUrl.clone().origin);
+  // return;
   try {
-    // 유저 메시지 저장
-    // await prisma.message.create({
-    //   data: { chatRoomId, sender: 'user', message },
-    // });
     console.log('flag 1');
     // 해당 채팅방의 카드 정보 가져오기
-    const chatRoomCards = await prisma.chatRoom_Card.findMany({
-      where: { chatRoomId },
-      include: {
-        card: true, // 카드 정보를 가져오기 위해 관계를 포함
-      },
-    });
+    // const chatRoomCards = await prisma.chatRoom_Card.findMany({
+    //   where: { chatRoomId },
+    //   include: {
+    //     card: true, // 카드 정보를 가져오기 위해 관계를 포함
+    //   },
+    // });
+    const response = await fetch(
+      `${request.nextUrl.clone().origin}/api/model/chatRoomCards/${chatRoomId}`,
+    );
+
+    const chatRoomCards = await response.json();
+    console.log('chat room cards:', chatRoomCards);
     console.log('flag 2');
     // 카드 설명 생성
     const cardDescriptions = chatRoomCards.map(getCardDescriptions);
@@ -62,8 +64,19 @@ export async function GET(
           }
           console.log('accumulator: ', accumulator);
           // AI 응답을 데이터베이스에 저장
-          await prisma.message.create({
-            data: { chatRoomId, sender: 'ai', message: accumulator },
+          // await prisma.message.create({
+          //   data: { chatRoomId, sender: 'ai', message: accumulator },
+          // });
+          await fetch(`${request.nextUrl.clone().origin}/api/model/message`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              chatRoomId,
+              sender: 'ai',
+              message: accumulator, // message는 body에 포함
+            }),
           });
         } catch (error) {
           console.error('Error during stream:', error);

@@ -1,5 +1,5 @@
 import cards from '@/static/cards';
-import prisma from './db';
+import prisma from '../src/libs/db';
 
 async function main() {
   await prisma.$executeRaw`SET IDENTITY_INSERT [dbo].[Card] ON`;
