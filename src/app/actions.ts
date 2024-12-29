@@ -3,7 +3,6 @@ import { TCard } from '@/types';
 import prisma from '../libs/db';
 export async function submitCards(cards: TCard[], userId: number) {
   try {
-    console.log(`submit cards called. cards: ${cards}`);
     if (!!!userId) {
       console.error('Invalid credential');
       return false;
@@ -18,7 +17,6 @@ export async function submitCards(cards: TCard[], userId: number) {
       create: { userId },
       update: {},
     });
-    console.log('room: ', room);
     const createmanyResult = await prisma.chatRoom_Card.createMany({
       data: cards.map((card) => ({
         chatRoomId: room.id,
@@ -29,7 +27,7 @@ export async function submitCards(cards: TCard[], userId: number) {
     console.log('create many result: ', createmanyResult);
     // return room;
     return room;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.log('submit cards internal error', error);
     // redirect('/error', RedirectType.replace);
     throw new Error('Internal server error');

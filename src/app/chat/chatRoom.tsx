@@ -9,6 +9,7 @@ import React, {
 } from 'react';
 import { checkChatRoom, getMessages } from '../actions';
 import ReactMarkdown from 'react-markdown';
+import Link from 'next/link';
 
 type Message = {
   id: number;
@@ -29,7 +30,30 @@ export default function ChatRoom() {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+  const handleReader = useCallback(
+    async (
+      response: Response,
+      setState: React.Dispatch<React.SetStateAction<string>>,
+    ) => {
+      const reader = response.body?.getReader();
+      if (!reader) {
+        throw new Error('No reader found');
+      }
+      const decoder = new TextDecoder();
+      let partialMessage = '';
 
+      // Stream AI response
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value);
+        console.log('chunk: ', chunk);
+        partialMessage += chunk;
+        setState(partialMessage);
+      }
+    },
+    [],
+  );
   useEffect(() => {
     scrollToBottom();
   }, [messages, streamingMessage]);
@@ -86,32 +110,7 @@ export default function ChatRoom() {
       .catch((err) => {
         console.log('use effect error', err);
       });
-  }, [chatRoomId]);
-
-  const handleReader = useCallback(
-    async (
-      response: Response,
-      setState: React.Dispatch<React.SetStateAction<string>>,
-    ) => {
-      const reader = response.body?.getReader();
-      if (!reader) {
-        throw new Error('No reader found');
-      }
-      const decoder = new TextDecoder();
-      let partialMessage = '';
-
-      // Stream AI response
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value);
-        console.log('chunk: ', chunk);
-        partialMessage += chunk;
-        setState(partialMessage);
-      }
-    },
-    [],
-  );
+  }, [chatRoomId, handleReader, searchParams]);
 
   const handleSend = async () => {
     if (!userInput.trim()) return;
@@ -129,13 +128,11 @@ export default function ChatRoom() {
     setUserInput('');
 
     try {
-      const response = await fetch(`/api/chat/${chatRoomId}`, {
+      const response = await fetch(`/api/edge/chat/${chatRoomId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: userInput }),
       });
-
-      if (!response.ok) throw new Error('Failed to send message');
 
       const reader = response.body?.getReader();
       if (!reader) throw new Error('No readable stream available');
@@ -209,9 +206,9 @@ export default function ChatRoom() {
           <div ref={messagesEndRef} /> {/* 스크롤 위치를 잡기 위한 더미 div */}
         </div>
         <div className='p-4 border-t border-gray-300 flex items-center space-x-2'>
-          <a href='/' className='btn'>
+          <Link href='/' className='btn'>
             Back
-          </a>
+          </Link>
           <input
             type='text'
             value={userInput}

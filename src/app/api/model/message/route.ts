@@ -7,8 +7,6 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { chatRoomId, sender, message } = body;
 
-    console.log('Request body:', body);
-
     // 필수 파라미터 확인
     if (!chatRoomId || !sender || !message) {
       return NextResponse.json(

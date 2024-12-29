@@ -1,16 +1,17 @@
+import { TLuck } from '@/types';
 import { Card } from '@prisma/client';
 
 export function getCardDescriptions({
   card,
   isOpposite,
-  luck,
+  lucks,
 }: {
   card: Card;
   isOpposite: boolean;
-  luck: 'finance' | 'career' | 'love' | 'advice' | 'general';
+  lucks: TLuck[];
 }) {
   return `Card ${card.id} (${card.name}): ${
     isOpposite ? 'Opposite' : 'Upright'
   }\n ""General meaning:** \n ${card.general}
-  \n **Description:** \n ${card[luck]}`;
+  \n **Description:** \n ${lucks.map((luck) => card[luck] + '\n')}`;
 }

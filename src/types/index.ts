@@ -3,3 +3,4 @@ export type TCard = {
   isOpposite: boolean;
   isFlipped: boolean;
 };
+export type TLuck = 'finance' | 'career' | 'love' | 'advice' | 'general';

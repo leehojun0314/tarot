@@ -14,9 +14,17 @@ export async function GET(
       },
     });
     console.log('chat room cards result: ', chatRoomCards);
-    return new Response(JSON.stringify(chatRoomCards), {
-      headers: { 'Content-Type': 'application/json' },
-    });
+
+    return new Response(
+      JSON.stringify(
+        chatRoomCards.map((crc) => {
+          return { card: crc.card, isOpposite: crc.isOpposite };
+        }),
+      ),
+      {
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
   } catch (error) {
     console.error('model chat room cards error: ', error);
     return NextResponse.json(

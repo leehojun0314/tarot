@@ -3,16 +3,20 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getCardDescriptions } from '@/utils';
 import OpenAI from 'openai';
 import { configs } from '@/configs';
+import { Card } from '@prisma/client';
+import { TLuck } from '@/types';
 
 export const runtime = 'edge';
 export async function POST(
   req: NextRequest,
-  { params }: { params: { chatRoomId: string } },
+  { params }: { params: { chatRoomId: string; luck: TLuck } },
 ) {
   const chatRoomId = params.chatRoomId;
+  const luck = params.luck;
   console.log('chat called. ');
   console.log('chat room id: ', params.chatRoomId);
   const { message } = await req.json();
+
   console.log('message: ', message);
   if (!chatRoomId || !message) {
     return new Response('Bad request', { status: 400 });
@@ -48,9 +52,18 @@ export async function POST(
     //     card: true,
     //   },
     // });
-    const chatRoomCardsRes = await fetch(`${req.nextUrl.clone().origin}`);
-    const chatRoomCards = await chatRoomCardsRes.json();
-    const cardDescriptions = chatRoomCards.map(getCardDescriptions);
+    const chatRoomCardsRes = await fetch(
+      `${req.nextUrl.clone().origin}/api/model/chatRoomCards/${chatRoomId}`,
+    );
+    const chatRoomCards: Array<{ card: Card; isOpposite: boolean }> =
+      await chatRoomCardsRes.json();
+    const cardDescriptions = chatRoomCards.map((el) => {
+      return getCardDescriptions({
+        card: el.card,
+        isOpposite: el.isOpposite,
+        lucks: ['general', luck],
+      });
+    });
     console.log('card descriptions: ', cardDescriptions);
     const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
       { role: 'system', content: configs.systemMessage },

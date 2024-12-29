@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { OpenAI } from 'openai';
 import { configs } from '@/configs';
 import { getCardDescriptions } from '@/utils';
+import { Card } from '@prisma/client';
+import { TLuck } from '@/types';
 
 // const prisma = new PrismaClient();
 const client = new OpenAI({
@@ -11,12 +13,34 @@ const client = new OpenAI({
 export const runtime = 'edge';
 export async function GET(
   request: NextRequest,
-  { params }: { params: { chatRoomId: string; luck: string } },
+  { params }: { params: { chatRoomId: string } },
 ) {
   const chatRoomId = parseInt(params.chatRoomId, 10);
-  const luck = params.luck;
+  const luck = request.nextUrl.searchParams.get('luck');
   console.log('next url: ', request.nextUrl.clone().origin);
   // return;
+  console.log('chat room id: ', chatRoomId);
+  console.log('luck: ', luck);
+  const validLucks: TLuck[] = [
+    'finance',
+    'career',
+    'love',
+    'advice',
+    'general',
+  ];
+
+  // Check if the `luck` is in the valid values
+  if (luck && validLucks.includes(luck as TLuck)) {
+    console.log('Valid luck:', luck);
+    // Do something with valid luck
+  } else {
+    console.log('Invalid luck value');
+    // Handle invalid luck
+    return new Response('Bad request', {
+      status: 400,
+      statusText: 'Bad Request',
+    });
+  }
   try {
     console.log('flag 1');
     // 해당 채팅방의 카드 정보 가져오기
@@ -26,20 +50,24 @@ export async function GET(
     //     card: true, // 카드 정보를 가져오기 위해 관계를 포함
     //   },
     // });
-    const response = await fetch(
+
+    const chatRoomCardsRes = await fetch(
       `${request.nextUrl.clone().origin}/api/model/chatRoomCards/${chatRoomId}`,
     );
-
-    const chatRoomCards = await response.json();
-    console.log('chat room cards:', chatRoomCards);
-    console.log('flag 2');
-    // 카드 설명 생성
-    const cardDescriptions = chatRoomCards.map(getCardDescriptions);
-    console.log('flag 3');
+    const chatRoomCards: Array<{ card: Card; isOpposite: boolean }> =
+      await chatRoomCardsRes.json();
+    console.log('chat room cards: ', chatRoomCards);
+    const cardDescriptions = chatRoomCards.map((el) => {
+      return getCardDescriptions({
+        card: el.card,
+        isOpposite: el.isOpposite,
+        lucks: [luck as TLuck],
+      });
+    });
     const userMessage = `I want to know about my ${luck} luck. Cards drawn:\n${cardDescriptions.join(
       '\n',
     )}\nAI response:`;
-
+    console.log('card descriptions: ', cardDescriptions);
     // OpenAI ChatGPT 요청 (스트리밍 방식)
     const stream = await client.chat.completions.create({
       model: 'gpt-4-turbo',
@@ -58,11 +86,9 @@ export async function GET(
         try {
           for await (const chunk of stream) {
             const content = chunk.choices[0]?.delta?.content || '';
-            console.log('content: ', content);
             accumulator += content;
             controller.enqueue(encoder.encode(content));
           }
-          console.log('accumulator: ', accumulator);
           // AI 응답을 데이터베이스에 저장
           // await prisma.message.create({
           //   data: { chatRoomId, sender: 'ai', message: accumulator },
