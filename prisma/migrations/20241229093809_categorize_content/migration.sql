@@ -1,0 +1,23 @@
+BEGIN TRY
+
+BEGIN TRAN;
+
+-- AlterTable
+ALTER TABLE [dbo].[Card] ADD [advice] TEXT NOT NULL CONSTRAINT [Card_advice_df] DEFAULT '',
+[career] TEXT NOT NULL CONSTRAINT [Card_career_df] DEFAULT '',
+[finance] TEXT NOT NULL CONSTRAINT [Card_finance_df] DEFAULT '',
+[general] TEXT NOT NULL CONSTRAINT [Card_general_df] DEFAULT '',
+[love] TEXT NOT NULL CONSTRAINT [Card_love_df] DEFAULT '';
+
+COMMIT TRAN;
+
+END TRY
+BEGIN CATCH
+
+IF @@TRANCOUNT > 0
+BEGIN
+    ROLLBACK TRAN;
+END;
+THROW
+
+END CATCH

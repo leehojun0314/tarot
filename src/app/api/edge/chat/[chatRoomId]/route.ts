@@ -4,6 +4,7 @@ import { getCardDescriptions } from '@/utils';
 import OpenAI from 'openai';
 import { configs } from '@/configs';
 
+export const runtime = 'edge';
 export async function POST(
   req: NextRequest,
   { params }: { params: { chatRoomId: string } },

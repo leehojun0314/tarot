@@ -12,6 +12,11 @@ model Card {
   id        Int             @id @default(autoincrement())
   name      String
   content   String          @default("") @db.Text
+  general   String          @default("") @db.Text
+  love      String          @default("") @db.Text
+  career    String          @default("") @db.Text
+  finance   String          @default("") @db.Text
+  advice    String          @default("") @db.Text
   chatRooms ChatRoom_Card[]
 }
 
