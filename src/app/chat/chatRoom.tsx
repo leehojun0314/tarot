@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { ChatRoom_Card } from '@prisma/client';
 import Card from '@/components/Card';
 import cards from '@/static/cards';
+import { transform } from 'next/dist/build/swc';
 
 type Message = {
   id: number;
@@ -196,6 +197,9 @@ export default function ChatRoom() {
                 }.png`}
                 alt='tarot'
                 width={80}
+                style={{
+                  transform: card.isOpposite ? 'rotateX(180deg)' : '',
+                }}
               />
             );
           })}
