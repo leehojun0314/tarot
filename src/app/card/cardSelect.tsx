@@ -46,8 +46,10 @@ export default function App() {
   }, [imagesLoaded]);
   useEffect(() => {
     if (selectedCards.length === configs.cardSelectCount) {
-      setLoadingSubmit;
-      handleSubmit();
+      setTimeout(() => {
+        setLoadingSubmit;
+        handleSubmit();
+      }, 2000);
     }
   }, [selectedCards]);
   const handleImageLoad = () => {
@@ -73,8 +75,9 @@ export default function App() {
       const luck = searchParams.get('luck');
       console.log('luck: ', luck);
       const room = await submitCards(selectedCards, 1); //TODO: need to be fixed
+      window.localStorage.setItem('salutation', 'true');
       if (room && room.id) {
-        window.location.href = `/chat?id=${room.id}&luck=${luck}&salutation=true`;
+        window.location.href = `/chat?id=${room.id}&luck=${luck}`;
       } else {
         window.alert('Error occured');
       }

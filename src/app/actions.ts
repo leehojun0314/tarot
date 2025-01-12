@@ -1,6 +1,7 @@
 'use server';
 import { TCard } from '@/types';
 import prisma from '../libs/db';
+import { Card, ChatRoom_Card } from '@prisma/client';
 export async function submitCards(cards: TCard[], userId: number) {
   try {
     if (!!!userId) {
@@ -61,4 +62,14 @@ export async function checkChatRoom(chatRoomId: number): Promise<boolean> {
   });
   console.log('room: ', room);
   return !!room;
+}
+export async function getChatRoomCards(
+  chatRoomId: number,
+): Promise<ChatRoom_Card[]> {
+  const cards = await prisma.chatRoom_Card.findMany({
+    where: {
+      chatRoomId,
+    },
+  });
+  return cards as ChatRoom_Card[];
 }

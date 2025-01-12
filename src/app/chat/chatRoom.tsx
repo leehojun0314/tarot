@@ -7,9 +7,12 @@ import React, {
   useCallback,
   useRef,
 } from 'react';
-import { checkChatRoom, getMessages } from '../actions';
+import { checkChatRoom, getChatRoomCards, getMessages } from '../actions';
 import ReactMarkdown from 'react-markdown';
 import Link from 'next/link';
+import { ChatRoom_Card } from '@prisma/client';
+import Card from '@/components/Card';
+import cards from '@/static/cards';
 
 type Message = {
   id: number;
@@ -26,7 +29,7 @@ export default function ChatRoom() {
   const searchParams = useSearchParams();
   const chatRoomId = searchParams.get('id');
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
+  const [selectedCards, setSelectedCards] = useState<ChatRoom_Card[]>([]);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -81,8 +84,10 @@ export default function ChatRoom() {
         // } else {
         //   return true;
         // }
-        const salutation = searchParams.get('salutation');
+        const salutation = window.localStorage.getItem('salutation');
+        console.log('salutation: ', salutation);
         if (salutation === 'true') {
+          window.localStorage.setItem('salutation', 'false');
           return true;
         }
         if (salutation === 'false') {
@@ -110,6 +115,15 @@ export default function ChatRoom() {
       .catch((err) => {
         console.log('use effect error', err);
       });
+    if (chatRoomId) {
+      getChatRoomCards(parseInt(chatRoomId))
+        .then((cards) => {
+          setSelectedCards(cards);
+        })
+        .catch((err) => {
+          console.log('error on fetching chat room cards', err);
+        });
+    }
   }, [chatRoomId, handleReader, searchParams]);
 
   const handleSend = async () => {
@@ -167,10 +181,25 @@ export default function ChatRoom() {
       setStreamingMessage('');
     }
   };
-
+  console.log('Cards: ', selectedCards);
   return (
     <Suspense>
-      <div className='min-h-screen flex flex-col'>
+      <div className='min-h-screen flex flex-col relative'>
+        <ul className='absolute flex flex-row p-4 gap-2 bg-slate-500 bg-opacity-80'>
+          {selectedCards.map((card) => {
+            const index = card.cardId;
+            return (
+              <img
+                key={index}
+                src={`https://dtizen.net/taro/png/${
+                  index < 10 ? '0' + index : index
+                }.png`}
+                alt='tarot'
+                width={80}
+              />
+            );
+          })}
+        </ul>
         <div className='overflow-y-auto p-4 h-[calc(100vh-80px)]'>
           {messages.map((msg) => (
             <div
