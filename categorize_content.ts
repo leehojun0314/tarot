@@ -28,7 +28,7 @@ async function classifyContentWithOpenAI(
 ): Promise<ClassifiedContent | null> {
   const prompt = `
     아래는 타로 카드의 설명입니다. 내용을 연애운, 직업운, 금전운, 조언, 일반 내용(기본 의미)으로 나눠주세요. 
-    각 항목은 가능한 간단하고 정확하게 요약해주세요.
+    각 항목은 적당히 간단하고 정확하게, 누락되는 내용없이 요약해주세요.
 
     설명:
     ${content}
