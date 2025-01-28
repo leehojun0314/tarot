@@ -44,7 +44,10 @@ export async function POST(
       throw new Error('Internal server error');
     });
 
-    const client = new OpenAI({ apiKey: process.env['OPENAI_API_KEY'] });
+    const client = new OpenAI({
+      apiKey: process.env['DEEPSEEK_API_KEY'],
+      baseURL: 'https://api.deepseek.com/v1',
+    });
 
     // const chatRoomCards = await prisma.chatRoom_Card.findMany({
     //   where: { chatRoomId: parseInt(chatRoomId) },
@@ -68,13 +71,13 @@ export async function POST(
     const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
       { role: 'system', content: configs.systemMessage },
       {
-        role: 'developer',
+        role: 'system',
         content: `The drawn cards from user: ${cardDescriptions.join('\n\n')}`,
       },
       { role: 'user', content: message },
     ];
     const stream = await client.chat.completions.create({
-      model: 'chatgpt-4o-latest',
+      model: 'deepseek-chat',
       messages: messages,
       stream: true,
     });

@@ -11,6 +11,9 @@
     "vercel-build": "prisma generate && prisma migrate deploy && next build"
   },
   "dependencies": {
+    "@langchain/community": "^0.3.25",
+    "@langchain/core": "^0.3.31",
+    "@langchain/openai": "^0.3.17",
     "@prisma/client": "^6.1.0",
     "axios": "^1.7.9",
     "closevector-node": "^0.1.6",

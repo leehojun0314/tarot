@@ -8,4 +8,5 @@ export const configs = {
     { id: 'career', name: '직업운' },
     { id: 'advice', name: '조언' },
   ],
+  relatedParagraphLength: 3000,
 };

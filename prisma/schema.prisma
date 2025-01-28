@@ -53,3 +53,9 @@ model Message {
   message    String   @db.Text
   timestamp  DateTime @default(now())
 }
+
+model Paragraph {
+  id      Int    @id @default(autoincrement())
+  content String @default("") @db.Text
+  name    String @default("")
+}
