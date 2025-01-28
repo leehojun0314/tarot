@@ -9,4 +9,5 @@ export const configs = {
     { id: 'advice', name: '조언' },
   ],
   relatedParagraphLength: 3000,
+  closeVectorSimilarityScore: 0.2,
 };
