@@ -1,7 +1,8 @@
 'use client';
-import React, { DialogHTMLAttributes } from 'react';
+import React, { DialogHTMLAttributes, useCallback } from 'react';
 import { useEffect, useState } from 'react';
 import Card from '@/components/Card';
+import { IoMdRefresh } from 'react-icons/io';
 
 import { TCard } from '@/types';
 // import { submitCards } from '../actions';
@@ -126,7 +127,9 @@ export default function App() {
       return result;
     });
   };
-
+  const handleRefresh = useCallback(() => {
+    window.location.reload();
+  }, []);
   return (
     <>
       {loading && (
@@ -152,12 +155,17 @@ export default function App() {
               isFlipped={isFlipped}
             />
           ))}
-          {/* <button
+          <button
             className='btn btn-primary  w-[100%] h-[100%]'
-            onClick={handleSubmit}
+            onClick={handleRefresh}
           >
-            Submit
-          </button> */}
+            <IoMdRefresh
+              style={{
+                width: 35,
+                height: 35,
+              }}
+            />
+          </button>
         </ul>
         {loadingSubmit && (
           <div className='w-[100vw] h-[100vh] absolute bg-black bg-opacity-80 flex justify-center items-center'>
@@ -192,6 +200,20 @@ export default function App() {
             </div>
           </div>
         </dialog>
+        <div className='flex flex-row justify-between'>
+          <a
+            className='btn btn-primary'
+            href='https://dtizen.net/taro/home.aspx'
+          >
+            홈으로
+          </a>
+          <a
+            className='btn btn-primary'
+            href='https://dtizen.net/taro/reload.aspx'
+          >
+            다시보기
+          </a>
+        </div>
       </div>
     </>
   );
