@@ -204,7 +204,7 @@ export default function ChatRoom() {
             );
           })}
         </ul>
-        <div className='overflow-y-auto p-4 h-[calc(100vh-80px)]'>
+        <div className='overflow-y-auto p-4 h-[calc(100vh-130px)]'>
           {messages.map((msg) => (
             <div
               key={msg.id}

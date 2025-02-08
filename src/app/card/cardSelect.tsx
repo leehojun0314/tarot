@@ -202,16 +202,16 @@ export default function App() {
         </dialog>
         <div className='flex flex-row justify-between'>
           <a
-            className='btn btn-primary'
+            className='btn btn-active'
             href='https://dtizen.net/taro/home.aspx'
           >
-            홈으로
+            Home
           </a>
           <a
-            className='btn btn-primary'
+            className='btn btn-active'
             href='https://dtizen.net/taro/reload.aspx'
           >
-            다시보기
+            Reload
           </a>
         </div>
       </div>
