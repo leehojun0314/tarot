@@ -9,10 +9,11 @@ import { TLuck } from '@/types';
 export const runtime = 'edge';
 export async function POST(
   req: NextRequest,
-  { params }: { params: { chatRoomId: string; luck: TLuck } },
+  { params }: { params: { chatRoomId: string } },
 ) {
   const chatRoomId = params.chatRoomId;
-  const luck = params.luck;
+  const luck = (new URL(req.url).searchParams.get('luck') ||
+    'general') as TLuck;
   console.log('chat called. ');
   console.log('chat room id: ', params.chatRoomId);
   const { message } = await req.json();

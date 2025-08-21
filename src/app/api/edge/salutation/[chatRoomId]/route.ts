@@ -22,11 +22,20 @@ export async function GET(
   console.log('chat room id: ', chatRoomId);
   console.log('luck: ', luck);
   const validLucks: TLuck[] = [
-    'finance',
-    'career',
-    'love',
-    'advice',
     'general',
+    'love',
+    'career',
+    'finance',
+    'advice',
+    'wealth',
+    'business',
+    'job',
+    'promotion',
+    'path',
+    'trade',
+    'move',
+    'children',
+    'study',
   ];
 
   // Check if the `luck` is in the valid values

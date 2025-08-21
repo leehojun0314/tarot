@@ -16,7 +16,17 @@ model Card {
   love      String          @default("") @db.Text
   career    String          @default("") @db.Text
   finance   String          @default("") @db.Text
+  wealth    String          @default("") @db.Text
   advice    String          @default("") @db.Text
+  // Additional detailed categories
+  business  String          @default("") @db.Text
+  job       String          @default("") @db.Text
+  promotion String          @default("") @db.Text
+  path      String          @default("") @db.Text
+  trade     String          @default("") @db.Text
+  move      String          @default("") @db.Text
+  children  String          @default("") @db.Text
+  study     String          @default("") @db.Text
   chatRooms ChatRoom_Card[]
 }
 

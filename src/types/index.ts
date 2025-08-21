@@ -3,4 +3,18 @@ export type TCard = {
   isOpposite: boolean;
   isFlipped: boolean;
 };
-export type TLuck = 'finance' | 'career' | 'love' | 'advice' | 'general';
+export type TLuck =
+  | 'general'
+  | 'love'
+  | 'career'
+  | 'finance'
+  | 'advice'
+  | 'wealth'
+  | 'business'
+  | 'job'
+  | 'promotion'
+  | 'path'
+  | 'trade'
+  | 'move'
+  | 'children'
+  | 'study';

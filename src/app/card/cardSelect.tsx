@@ -1,5 +1,5 @@
 'use client';
-import React, { DialogHTMLAttributes, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useEffect, useState } from 'react';
 import Card from '@/components/Card';
 import { IoMdRefresh } from 'react-icons/io';
@@ -48,7 +48,7 @@ export default function App() {
   useEffect(() => {
     if (selectedCards.length === configs.cardSelectCount) {
       setTimeout(() => {
-        setLoadingSubmit;
+        setLoadingSubmit(true);
         handleSubmit();
       }, 2000);
     }

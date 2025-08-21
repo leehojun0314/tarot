@@ -11,9 +11,6 @@ import { checkChatRoom, getChatRoomCards, getMessages } from '../actions';
 import ReactMarkdown from 'react-markdown';
 import Link from 'next/link';
 import { ChatRoom_Card } from '@prisma/client';
-import Card from '@/components/Card';
-import cards from '@/static/cards';
-import { transform } from 'next/dist/build/swc';
 
 type Message = {
   id: number;
@@ -143,11 +140,16 @@ export default function ChatRoom() {
     setUserInput('');
 
     try {
-      const response = await fetch(`/api/edge/chat/${chatRoomId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userInput }),
-      });
+      const response = await fetch(
+        `/api/edge/chat/${chatRoomId}?luck=${
+          searchParams.get('luck') || 'general'
+        }`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userInput }),
+        },
+      );
 
       const reader = response.body?.getReader();
       if (!reader) throw new Error('No readable stream available');
