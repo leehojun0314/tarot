@@ -1,5 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const tiles: Array<{ id: string; name: string; desc: string; emoji: string }> =
   [
@@ -63,6 +64,19 @@ export default function LuckSelection() {
           ))}
         </section>
       </main>
+
+      {/* Bottom-left Home button (benchmark-style tabbar simplified) */}
+      <nav className='fixed left-0 bottom-0 z-[60] w-full bg-[linear-gradient(180deg,rgba(8,10,16,.05),rgba(8,10,16,.2))] border-t border-[rgba(255,255,255,.08)] backdrop-blur'>
+        <div className='max-w-screen-lg mx-auto px-2 py-2'>
+          <Link
+            href='http://www.onnl.net/alarm_fortune/default.aspx'
+            className='inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-[12px] text-[#f2f5ff]'
+          >
+            <span className='text-base'>🏠</span>
+            <span>홈</span>
+          </Link>
+        </div>
+      </nav>
     </div>
   );
 }
